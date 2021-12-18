@@ -14,6 +14,8 @@ using ProcessManagement.Infrastructure.Auth.AuthenticationHandlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.CookiePolicy;
 using ProcessManagement.Core;
+using ProcessManagement.Infrastructure.Services;
+using ProcessManagement.Core.Services;
 
 namespace ProcessManagement.Infrastructure
 {
@@ -25,11 +27,13 @@ namespace ProcessManagement.Infrastructure
                 options.UseNpgsql(configuration.GetConnectionString("ProcessManagementContext")));
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IAuthService, AuthService>();
 
             services.AddAuthentication(SessionAuthenticationHandler.SchemeName)
                 .AddScheme<SessionAuthenticationSchemeOptions, SessionAuthenticationHandler>(SessionAuthenticationHandler.SchemeName, null); // TODO:  slidingExpiration  in config
 
             services.AddSingleton<ISessionStore, InMemorySessionStore>(); // TODO: change to scoped after migrate to Redis
+            services.AddHttpContextAccessor();
 
             services.Configure<CookiePolicyOptions>(options =>
             {

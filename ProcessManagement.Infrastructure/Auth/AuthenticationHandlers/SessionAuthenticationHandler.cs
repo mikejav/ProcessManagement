@@ -47,9 +47,8 @@ namespace ProcessManagement.Infrastructure.Auth.AuthenticationHandlers
             }
 
             var claims = new[] {
-                    new Claim(ClaimTypes.NameIdentifier, sessionModel.UserId),
-                    new Claim(ClaimTypes.Email, ""),
-                    new Claim(ClaimTypes.Name, "") };
+                    new Claim(ClaimTypes.NameIdentifier, sessionModel.UserNameIdentifier)
+            };
 
             var claimsIdentity = new ClaimsIdentity(claims,
                             nameof(SessionAuthenticationHandler));
@@ -67,7 +66,7 @@ namespace ProcessManagement.Infrastructure.Auth.AuthenticationHandlers
             var sessionModel = new SessionModel()
             {
                 Id = sid,
-                UserId = "",
+                UserNameIdentifier = user.FindFirstValue(ClaimTypes.NameIdentifier),
             };
             _sessionStore.StoreAsync(sessionModel);
 

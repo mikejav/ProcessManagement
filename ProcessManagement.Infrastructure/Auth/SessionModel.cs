@@ -9,6 +9,6 @@ namespace ProcessManagement.Infrastructure.Auth
     class SessionModel
     {
         public string Id { get; set; }
-        public string UserId { get; set; }
+        public string UserNameIdentifier { get; set; }
     }
 }
