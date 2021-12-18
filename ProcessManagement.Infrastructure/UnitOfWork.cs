@@ -33,12 +33,23 @@ namespace ProcessManagement.Infrastructure
             }
         }
 
+        private Lazy<UserRepository> _userRepository;
+
+        public IUserRepository UserRepository
+        {
+            get
+            {
+                return _userRepository.Value;
+            }
+        }
+
         public UnitOfWork(ProcessManagementDbContext pocessManagementDbContext)
         {
             _processManagementDbContext = pocessManagementDbContext;
 
             _projectRepository = new Lazy<ProjectRepository>(() => new ProjectRepository(_processManagementDbContext));
             _workItemRepository = new Lazy<WorkItemRepository>(() => new WorkItemRepository(_processManagementDbContext));
+            _userRepository = new Lazy<UserRepository>(() => new UserRepository(_processManagementDbContext));
         }
 
         public Task CompleteAsync()

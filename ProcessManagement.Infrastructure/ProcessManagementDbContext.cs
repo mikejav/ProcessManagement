@@ -13,6 +13,7 @@ namespace ProcessManagement.Infrastructure
     {
         public DbSet<Project> Projects { get; set; }
         public DbSet<WorkItem> WorkItems { get; set; }
+        public DbSet<User> Users { get; set; }
         public ProcessManagementDbContext(DbContextOptions options)
             : base(options)
         {
@@ -26,7 +27,7 @@ namespace ProcessManagement.Infrastructure
                     .ValueGeneratedOnAdd();
 
                 eb.Property(p => p.Name)
-                    .IsRequired(true)
+                    .IsRequired()
                     .HasMaxLength(256);
 
                 eb.Property(p => p.Description)
@@ -34,11 +35,19 @@ namespace ProcessManagement.Infrastructure
                     .HasColumnType("TEXT");
             });
 
-            modelBuilder.Entity<WorkItem>(wi => {
-                wi.HasOne(w => w.Project).WithMany();
+            modelBuilder.Entity<WorkItem>(eb => {
+                eb.HasOne(w => w.Project).WithMany();
 
-                wi.Property(p => p.Id)
+                eb.Property(w => w.Id)
                     .ValueGeneratedOnAdd();
+            });
+
+            modelBuilder.Entity<User>(eb => {
+                eb.HasKey(u => u.Id);
+                eb.Property(p => p.Id).ValueGeneratedOnAdd();
+                eb.Property(u => u.Name).IsRequired().IsUnicode();
+                eb.Property(u => u.Email).IsRequired().IsUnicode();
+                eb.Property(u => u.Password).IsRequired();
             });
 
             base.OnModelCreating(modelBuilder);

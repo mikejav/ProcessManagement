@@ -11,6 +11,7 @@ namespace ProcessManagement.Core
     {
         IProjectRepository ProjectRepository { get; }
         IWorkItemRepository WorkItemRepository { get; }
+        IUserRepository UserRepository { get; }
 
         Task CompleteAsync();
     }
