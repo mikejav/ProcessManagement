@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.CookiePolicy;
 using ProcessManagement.Core;
 using ProcessManagement.Infrastructure.Services;
 using ProcessManagement.Core.Services;
+using StackExchange.Redis;
 
 namespace ProcessManagement.Infrastructure
 {
@@ -32,8 +33,14 @@ namespace ProcessManagement.Infrastructure
             services.AddAuthentication(SessionAuthenticationHandler.SchemeName)
                 .AddScheme<SessionAuthenticationSchemeOptions, SessionAuthenticationHandler>(SessionAuthenticationHandler.SchemeName, null); // TODO:  slidingExpiration  in config
 
-            services.AddSingleton<ISessionStore, InMemorySessionStore>(); // TODO: change to scoped after migrate to Redis
+            services.AddScoped<ISessionStore, RedisSessionStore>(); // TODO: change singleton to scoped after migrate to Redis
             services.AddHttpContextAccessor();
+            //services.AddStackExchangeRedisCache(options =>
+            //{
+            //    options.Configuration = "localhost:6379";
+            //    options.InstanceName = "main";
+            //});
+            services.AddStackExchangeRedis();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -45,6 +52,15 @@ namespace ProcessManagement.Infrastructure
 
             //services.AddControllers().AddNewtonsoftJson(x =>
             //    x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+            return services;
+        }
+
+        public static IServiceCollection AddStackExchangeRedis(this IServiceCollection services)
+        {
+            var conn = ConnectionMultiplexer.Connect("localhost:6379");
+            IDatabase db = conn.GetDatabase();
+            services.AddSingleton(db);
 
             return services;
         }
