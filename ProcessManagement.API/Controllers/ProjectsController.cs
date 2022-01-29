@@ -27,7 +27,7 @@ namespace ProcessManagement.API.Controllers
         }
 
         [HttpGet("list")]
-        public async Task<IActionResult> GetList()
+        public ActionResult<IEnumerable<Project>> GetList()
         {
             var user = _authService.GetLoggedInUser();
 
@@ -42,7 +42,7 @@ namespace ProcessManagement.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById([FromRoute] string id)
+        public ActionResult<Project> GetById([FromRoute] string id)
         {
             Specification<Project> specification = new()
             {
@@ -57,7 +57,7 @@ namespace ProcessManagement.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateProject createProjectRequest)
+        public async Task<ActionResult<Project>> Create([FromBody] CreateProject createProjectRequest)
         {
             var user = _authService.GetLoggedInUser();
             var createdProject = _unitOfWork.ProjectRepository.Add(createProjectRequest.ToProject(user.Id));
@@ -67,7 +67,7 @@ namespace ProcessManagement.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromRoute] string id, [FromBody] UpdateProject updateProjectRequest)
+        public async Task<ActionResult<Project>> Update([FromRoute] string id, [FromBody] UpdateProject updateProjectRequest)
         {
             var originalProject = _unitOfWork.ProjectRepository.Get(new Specification<Project>
             {
@@ -84,7 +84,7 @@ namespace ProcessManagement.API.Controllers
         }
 
         [HttpDelete("{projectId}")]
-        public async Task<IActionResult> Delete([FromRoute] string projectId)
+        public async Task<ActionResult> Delete([FromRoute] string projectId)
         {
             var toDelete = _unitOfWork.ProjectRepository.Get(new Specification<Project>
             {

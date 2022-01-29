@@ -26,7 +26,7 @@ namespace ProcessManagement.API.Controllers
         }
 
         [HttpGet("list")]
-        public async Task<IActionResult> GetList([FromQuery] string projectId)
+        public ActionResult<IEnumerable<WorkItem>> GetList([FromQuery] string projectId)
         {
             var user = _authService.GetLoggedInUser();
 
@@ -41,7 +41,7 @@ namespace ProcessManagement.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById([FromRoute] string id)
+        public ActionResult<WorkItem> GetById([FromRoute] string id)
         {
             Specification<WorkItem> specification = new()
             {
@@ -60,7 +60,7 @@ namespace ProcessManagement.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateWorkItem createWorkItemRequest)
+        public async Task<ActionResult<WorkItem>> Create([FromBody] CreateWorkItem createWorkItemRequest)
         {
             var user = _authService.GetLoggedInUser();
             var createdWorkItem = _unitOfWork.WorkItemRepository.Add(createWorkItemRequest.ToWorkItem(user.Id));
@@ -70,16 +70,16 @@ namespace ProcessManagement.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromRoute] string id, [FromBody] UpdateWorkItem updateWorkItemRequest)
+        public async Task<ActionResult<WorkItem>> Update([FromRoute] string id, [FromBody] UpdateWorkItem updateWorkItemRequest)
         {
-            var updatedProject = _unitOfWork.WorkItemRepository.Update(updateWorkItemRequest.ToWorkItem(id));
+            var updatedWorkItem = _unitOfWork.WorkItemRepository.Update(updateWorkItemRequest.ToWorkItem(id));
             await _unitOfWork.CompleteAsync();
 
-            return Ok(updatedProject);
+            return Ok(updatedWorkItem);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete([FromRoute] string id)
+        public async Task<ActionResult> Delete([FromRoute] string id)
         {
             _unitOfWork.WorkItemRepository.Remove(new WorkItem {
                 Id = id,
