@@ -31,15 +31,10 @@ namespace ProcessManagement.Infrastructure
             services.AddScoped<IAuthService, AuthService>();
 
             services.AddAuthentication(SessionAuthenticationHandler.SchemeName)
-                .AddScheme<SessionAuthenticationSchemeOptions, SessionAuthenticationHandler>(SessionAuthenticationHandler.SchemeName, null); // TODO:  slidingExpiration  in config
+                .AddScheme<SessionAuthenticationSchemeOptions, SessionAuthenticationHandler>(SessionAuthenticationHandler.SchemeName, null);
 
-            services.AddScoped<ISessionStore, RedisSessionStore>(); // TODO: change singleton to scoped after migrate to Redis
+            services.AddScoped<ISessionStore, RedisSessionStore>();
             services.AddHttpContextAccessor();
-            //services.AddStackExchangeRedisCache(options =>
-            //{
-            //    options.Configuration = "localhost:6379";
-            //    options.InstanceName = "main";
-            //});
             services.AddStackExchangeRedis();
 
             services.Configure<CookiePolicyOptions>(options =>
@@ -49,9 +44,6 @@ namespace ProcessManagement.Infrastructure
                 options.Secure = env.IsDevelopment()
                   ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
             });
-
-            //services.AddControllers().AddNewtonsoftJson(x =>
-            //    x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             return services;
         }

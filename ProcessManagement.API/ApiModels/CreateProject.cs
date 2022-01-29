@@ -11,13 +11,13 @@ namespace ProcessManagement.API.ApiModels
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public Project ToProject()
+        public Project ToProject(string userId)
         {
             return new Project()
             {
                 Name = this.Name,
                 Description = this.Description,
-                CreatedBy = "",
+                CreatedBy = userId,
             };
         }
     }

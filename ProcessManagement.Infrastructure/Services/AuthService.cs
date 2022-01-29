@@ -36,7 +36,7 @@ namespace ProcessManagement.Infrastructure.Services
             return user;
         }
 
-        public Task SignInAsync(string email, string password)
+        public async Task<User> SignInAsync(string email, string password)
         {
             var user = _unitOfWork.UserRepository.Get(new Specification<User>
             {
@@ -59,24 +59,37 @@ namespace ProcessManagement.Infrastructure.Services
             };
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-            return _httpContextAccessor.HttpContext.SignInAsync(new ClaimsPrincipal(claimsIdentity));
+            await _httpContextAccessor.HttpContext.SignInAsync(new ClaimsPrincipal(claimsIdentity));
+
+            return user;
+        }
+
+        public Task SignUpAsync(string name, string email, string password)
+        {
+            var salt = CreatePasswordSalt();
+            var user = _unitOfWork.UserRepository.Add(new User
+            {
+                Name = name,
+                Email = email,
+                Password = HashPassword(password, salt),
+                Salt = Convert.ToBase64String(salt),
+            });
+
+            _unitOfWork.ProjectRepository.Add(new Project
+            {
+                Name = "Your first project",
+                Description = "This is your first project. " +
+                    "Feel free to add a work items to it.",
+                CreatedBy = user.Id,
+            });
+
+            return _unitOfWork.CompleteAsync();
         }
 
         public Task SignOutAsync()
         {
             return _httpContextAccessor.HttpContext.SignOutAsync();
         }
-
-        // SignUp:
-        //var salt = CreatePasswordSalt();
-        //_unitOfWork.UserRepository.Add(new User
-        //{
-        //    Email = authLogin.Email,
-        //    Name = "Test1",
-        //    Password = HashPassword(authLogin.Password, salt),
-        //    Salt = Convert.ToBase64String(salt),
-        //});
-        //await _unitOfWork.CompleteAsync();
 
         private string HashPassword(string password, byte[] salt)
         {

@@ -40,6 +40,9 @@ namespace ProcessManagement.Infrastructure
 
                 eb.Property(w => w.Id)
                     .ValueGeneratedOnAdd();
+
+                eb.Property(w => w.Status)
+                    .IsRequired();
             });
 
             modelBuilder.Entity<User>(eb => {

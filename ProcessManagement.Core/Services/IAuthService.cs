@@ -10,7 +10,8 @@ namespace ProcessManagement.Core.Services
     public interface IAuthService
     {
         public User GetLoggedInUser();
-        public Task SignInAsync(string email, string password);
+        public Task<User> SignInAsync(string email, string password);
         public Task SignOutAsync();
+        public Task SignUpAsync(string name, string email, string password);
     }
 }

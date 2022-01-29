@@ -39,14 +39,12 @@ namespace ProcessManagement.API.Controllers
         {
             try
             {
-                await _authService.SignInAsync(authLogin.Email, authLogin.Password);
+                return Ok(await _authService.SignInAsync(authLogin.Email, authLogin.Password));
             }
             catch
             {
                 return Unauthorized();
             }
-
-            return Ok();
         }
 
         [AllowAnonymous]
@@ -62,9 +60,7 @@ namespace ProcessManagement.API.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Register([FromBody] CreateUser createUser)
         {
-            _unitOfWork.UserRepository.Add(createUser.ToUser());
-
-            await _unitOfWork.CompleteAsync();
+            await _authService.SignUpAsync(createUser.Name, createUser.Email, createUser.Password);
 
             return Ok();
         }

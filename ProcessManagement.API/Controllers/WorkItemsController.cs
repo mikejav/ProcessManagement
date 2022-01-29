@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProcessManagement.API.ApiModels;
 using ProcessManagement.Core;
 using ProcessManagement.Core.Entities;
+using ProcessManagement.Core.Services;
 using ProcessManagement.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -16,18 +17,22 @@ namespace ProcessManagement.API.Controllers
     public class WorkItemsController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IAuthService _authService;
 
-        public WorkItemsController(IUnitOfWork unitOfWork)
+        public WorkItemsController(IUnitOfWork unitOfWork, IAuthService authService)
         {
             _unitOfWork = unitOfWork;
+            _authService = authService;
         }
 
         [HttpGet("list")]
         public async Task<IActionResult> GetList([FromQuery] string projectId)
         {
+            var user = _authService.GetLoggedInUser();
+
             Specification<WorkItem> specification = new Specification<WorkItem>
             {
-                Criteria = (w) => w.Project.Id == projectId,
+                Criteria = (w) => w.Project.Id == projectId && w.CreatedBy == user.Id,
             };
 
             var list = _unitOfWork.WorkItemRepository.Get(specification);
@@ -57,7 +62,8 @@ namespace ProcessManagement.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateWorkItem createWorkItemRequest)
         {
-            var createdWorkItem = _unitOfWork.WorkItemRepository.Add(createWorkItemRequest.ToWorkItem());
+            var user = _authService.GetLoggedInUser();
+            var createdWorkItem = _unitOfWork.WorkItemRepository.Add(createWorkItemRequest.ToWorkItem(user.Id));
             await _unitOfWork.CompleteAsync();
 
             return CreatedAtAction("GetById", new { id = createdWorkItem.Id }, createdWorkItem);
@@ -70,6 +76,17 @@ namespace ProcessManagement.API.Controllers
             await _unitOfWork.CompleteAsync();
 
             return Ok(updatedProject);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] string id)
+        {
+            _unitOfWork.WorkItemRepository.Remove(new WorkItem {
+                Id = id,
+            });
+            await _unitOfWork.CompleteAsync();
+
+            return Ok();
         }
     }
 }

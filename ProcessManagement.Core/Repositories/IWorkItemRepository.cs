@@ -13,6 +13,7 @@ namespace ProcessManagement.Core.Repositories
         WorkItem Add(WorkItem workItem);
         WorkItem Update(WorkItem workItem);
         void Remove(WorkItem workItem);
+        void RemoveRange(IEnumerable<WorkItem> workItems);
         void SaveChanges();
     }
 }

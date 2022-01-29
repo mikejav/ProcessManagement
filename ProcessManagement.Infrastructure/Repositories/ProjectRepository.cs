@@ -45,7 +45,7 @@ namespace ProcessManagement.Infrastructure.Repositories
 
         public void Remove(Project project)
         {
-            throw new NotImplementedException();
+            _processManagementDbContext.Projects.Remove(project);
         }
 
         public Project Update(Project project)

@@ -45,7 +45,12 @@ namespace ProcessManagement.Infrastructure.Repositories
 
         public void Remove(WorkItem workItem)
         {
-            throw new NotImplementedException();
+            _processManagementDbContext.WorkItems.Remove(workItem);
+        }
+        
+        public void RemoveRange(IEnumerable<WorkItem> workItems)
+        {
+            _processManagementDbContext.WorkItems.RemoveRange(workItems);
         }
 
         public WorkItem Update(WorkItem workItem)
