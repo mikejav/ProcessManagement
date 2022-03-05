@@ -50,6 +50,7 @@ namespace ProcessManagement.API
             services.AddControllers(options =>
             {
                 options.Filters.Add(new AuthorizeFilter());
+                options.AllowEmptyInputInBodyModelBinding = true;
             });
             services.AddSwaggerGen(c =>
             {

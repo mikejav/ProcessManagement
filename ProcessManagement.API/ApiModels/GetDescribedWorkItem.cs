@@ -10,6 +10,7 @@ namespace ProcessManagement.API.ApiModels
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public DateTime? DueDate { get; set; }
         public WorkItemStatus Status { get; set; }
         public string Description { get; set; }
         public string ProjectId { get; set; }
@@ -25,6 +26,7 @@ namespace ProcessManagement.API.ApiModels
             {
                 Id = workItem.Id,
                 Name = workItem.Name,
+                DueDate = workItem.DueDate,
                 Status = workItem.Status,
                 Description = workItem.Description,
                 ProjectId = workItem.Project.Id,
