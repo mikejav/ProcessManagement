@@ -11,5 +11,6 @@ namespace ProcessManagement.Core.Entities
         TO_DO,
         IN_PROGRESS,
         DONE,
+        CANCELLED,
     }
 }
