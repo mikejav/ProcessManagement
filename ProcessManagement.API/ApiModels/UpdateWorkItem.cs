@@ -12,7 +12,7 @@ namespace ProcessManagement.API.ApiModels
         public WorkItemStatus Status { get; set; }
         public string Description { get; set; }
 
-        public WorkItem ToWorkItem(string projectId)
+        public WorkItem ToWorkItem(string projectId, string userId)
         {
             return new WorkItem()
             {
@@ -20,6 +20,7 @@ namespace ProcessManagement.API.ApiModels
                 Name = this.Name,
                 Status = this.Status,
                 Description = this.Description,
+                CreatedBy = userId,
             };
         }
     }

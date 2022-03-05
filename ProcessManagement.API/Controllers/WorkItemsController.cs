@@ -72,7 +72,8 @@ namespace ProcessManagement.API.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<WorkItem>> Update([FromRoute] string id, [FromBody] UpdateWorkItem updateWorkItemRequest)
         {
-            var updatedWorkItem = _unitOfWork.WorkItemRepository.Update(updateWorkItemRequest.ToWorkItem(id));
+            var user = _authService.GetLoggedInUser();
+            var updatedWorkItem = _unitOfWork.WorkItemRepository.Update(updateWorkItemRequest.ToWorkItem(id, user.Id));
             await _unitOfWork.CompleteAsync();
 
             return Ok(updatedWorkItem);
