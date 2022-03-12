@@ -36,7 +36,6 @@ namespace ProcessManagement.API
         public IConfiguration Configuration { get; }
         private IWebHostEnvironment _env { get; set; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddInfrastructure(Configuration, _env);
@@ -45,7 +44,6 @@ namespace ProcessManagement.API
             services.AddRouting(options =>
             {
                 options.LowercaseUrls = true;
-                // options.LowercaseQueryStrings = true;
             });
             services.AddControllers(options =>
             {

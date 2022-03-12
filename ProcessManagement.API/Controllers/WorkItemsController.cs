@@ -26,13 +26,20 @@ namespace ProcessManagement.API.Controllers
         }
 
         [HttpGet("list")]
-        public ActionResult<IEnumerable<WorkItem>> GetList([FromQuery] string projectId)
+        public ActionResult<IEnumerable<WorkItem>> GetList([FromQuery] string projectId, [FromQuery] string name, [FromQuery] WorkItemStatus? status)
         {
             var user = _authService.GetLoggedInUser();
 
             Specification<WorkItem> specification = new Specification<WorkItem>
             {
-                Criteria = (w) => w.Project.Id == projectId && w.CreatedBy == user.Id,
+                Criteria = (w) => w.Project.Id == projectId
+                    && w.CreatedBy == user.Id
+                    && (
+                        String.IsNullOrEmpty(name) ? true : w.Name.Contains(name)
+                    )
+                    && (
+                        status == null ? true : w.Status == status
+                    )
             };
 
             var list = _unitOfWork.WorkItemRepository.Get(specification);

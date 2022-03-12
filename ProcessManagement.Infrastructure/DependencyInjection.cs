@@ -22,7 +22,8 @@ namespace ProcessManagement.Infrastructure
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
+        public static IServiceCollection AddInfrastructure(
+            this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
             services.AddDbContext<ProcessManagementDbContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("ProcessManagementContext")));
@@ -31,7 +32,8 @@ namespace ProcessManagement.Infrastructure
             services.AddScoped<IAuthService, AuthService>();
 
             services.AddAuthentication(SessionAuthenticationHandler.SchemeName)
-                .AddScheme<SessionAuthenticationSchemeOptions, SessionAuthenticationHandler>(SessionAuthenticationHandler.SchemeName, null);
+                .AddScheme<SessionAuthenticationSchemeOptions, SessionAuthenticationHandler>(
+                    SessionAuthenticationHandler.SchemeName, null);
 
             services.AddScoped<ISessionStore, RedisSessionStore>();
             services.AddHttpContextAccessor();
