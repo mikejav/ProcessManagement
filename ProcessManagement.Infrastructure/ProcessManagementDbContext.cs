@@ -14,6 +14,7 @@ namespace ProcessManagement.Infrastructure
         public DbSet<Project> Projects { get; set; }
         public DbSet<WorkItem> WorkItems { get; set; }
         public DbSet<User> Users { get; set; }
+
         public ProcessManagementDbContext(DbContextOptions options)
             : base(options)
         {
